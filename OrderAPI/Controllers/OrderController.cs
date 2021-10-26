@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrderAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OrderAPI.Controllers
 {
@@ -12,18 +11,23 @@ namespace OrderAPI.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        // GET: api/<OrderController>
-        [HttpGet]
-        public IEnumerable<string> Get()
-        {
-            return new string[] { "value1", "value2" };
-        }
-
-        // GET api/<OrderController>/5
+        /// <summary>
+        /// Retrieves an order by ID.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">ID of Order</param>
+        /// <returns>Returns an Order</returns>
+        /// <response code="200">Returns the order retrieved</response>
+        /// <response code="400">If the order does not exist</response>  
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<Order> Get(int id)
         {
-            return "value";
+            var order = DummyData.DummyData.DummyOrders.FirstOrDefault(x => x.ID == id);
+            if (order is null)
+                return NotFound();
+
+            return Ok(order);
         }
 
         // POST api/<OrderController>
