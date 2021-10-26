@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using OrderAPI.Business;
 using OrderAPI.Models;
 using System;
 using System.Collections.Generic;
@@ -11,6 +12,13 @@ namespace OrderAPI.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
+        private readonly IOrderManagement _orderManagement;
+
+        public OrderController(IOrderManagement orderManagement)
+        {
+            _orderManagement = orderManagement;
+        }
+
         /// <summary>
         /// Retrieves an order by ID.
         /// </summary>
@@ -30,10 +38,24 @@ namespace OrderAPI.Controllers
             return Ok(order);
         }
 
-        // POST api/<OrderController>
+        /// <summary>
+        /// Creates an Order in the system
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="order">Order Object</param>
+        /// <returns>ID of created order</returns>
+        /// <response code="200">Order Created Successfully</response>
+        /// <response code="400">If Order fails creation</response>  
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<int> Post([FromBody] Order order)
         {
+            try
+            {
+                return Ok(_orderManagement.CreateOrder(order));
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<OrderController>/5
