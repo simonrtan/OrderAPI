@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
+using OrderAPI.Business;
+using OrderAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace OrderAPI.Controllers
 {
@@ -12,24 +13,61 @@ namespace OrderAPI.Controllers
     [ApiController]
     public class OrderController : ControllerBase
     {
-        // GET: api/<OrderController>
-        [HttpGet]
-        public IEnumerable<string> Get()
+        private readonly IOrderManagement _orderManagement;
+
+        public OrderController(IOrderManagement orderManagement)
         {
-            return new string[] { "value1", "value2" };
+            _orderManagement = orderManagement;
         }
 
-        // GET api/<OrderController>/5
+        /// <summary>
+        /// Retrieves an order by ID.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">ID of Order</param>
+        /// <returns>Returns an Order</returns>
+        /// <response code="200">Returns the order retrieved</response>
+        /// <response code="400">If the order does not exist</response>  
         [HttpGet("{id}")]
-        public string Get(int id)
+        public ActionResult<Order> Get(int id)
         {
-            return "value";
+            try
+            {
+                using (var conn = new NpgsqlConnection("Server=localhost;Port=5432;Database=postgres;User Id=postgres;Password=Pass2020!;"))
+                {
+                    conn.Open();
+                }
+            } catch (Exception ex)
+            {
+                var test = ex;
+            }
+
+            var order = DummyData.DummyData.DummyOrders.FirstOrDefault(x => x.ID == id);
+            if (order is null)
+                return NotFound();
+
+            return Ok(order);
         }
 
-        // POST api/<OrderController>
+        /// <summary>
+        /// Creates an Order in the system
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="order">Order Object</param>
+        /// <returns>ID of created order</returns>
+        /// <response code="200">Order Created Successfully</response>
+        /// <response code="400">If Order fails creation</response>  
         [HttpPost]
-        public void Post([FromBody] string value)
+        public ActionResult<int> Post([FromBody] Order order)
         {
+            try
+            {
+                return Ok(_orderManagement.CreateOrder(order));
+            } catch (Exception ex) {
+                return BadRequest(ex.Message);
+            }
         }
 
         // PUT api/<OrderController>/5
