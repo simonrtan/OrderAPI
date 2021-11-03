@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Npgsql;
 using OrderAPI.Business;
 using OrderAPI.Models;
 using System;
@@ -31,6 +32,17 @@ namespace OrderAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<Order> Get(int id)
         {
+            try
+            {
+                using (var conn = new NpgsqlConnection("Server=localhost;Port=5432;Database=postgres;User Id=postgres;Password=Pass2020!;"))
+                {
+                    conn.Open();
+                }
+            } catch (Exception ex)
+            {
+                var test = ex;
+            }
+
             var order = DummyData.DummyData.DummyOrders.FirstOrDefault(x => x.ID == id);
             if (order is null)
                 return NotFound();
