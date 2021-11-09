@@ -32,18 +32,7 @@ namespace OrderAPI.Controllers
         [HttpGet("{id}")]
         public ActionResult<Order> Get(int id)
         {
-            try
-            {
-                using (var conn = new NpgsqlConnection("Server=localhost;Port=5432;Database=postgres;User Id=postgres;Password=Pass2020!;"))
-                {
-                    conn.Open();
-                }
-            } catch (Exception ex)
-            {
-                var test = ex;
-            }
-
-            var order = DummyData.DummyData.DummyOrders.FirstOrDefault(x => x.ID == id);
+            var order = _orderManagement.GetOrder(id);
             if (order is null)
                 return NotFound();
 
@@ -70,16 +59,44 @@ namespace OrderAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates an orderin the system
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">ID of Order</param>
+        /// <param name="order">Updated Order Object</param>
+        /// <response code="200">Order Updated Successfully</response>
+        /// <response code="400">If Order does not exist</response> 
         // PUT api/<OrderController>/5
         [HttpPut("{id}")]
-        public void Put(int id, [FromBody] string value)
+        public ActionResult Put(int id, [FromBody] Order order)
         {
+            var existingOrder = _orderManagement.GetOrder(id);
+            if (existingOrder is null)
+                return NotFound();
+
+            return Ok();
         }
 
+        /// <summary>
+        /// Retrieves an order by ID.
+        /// </summary>
+        /// <remarks>
+        /// </remarks>
+        /// <param name="id">ID of Order</param>
+        /// <response code="200">Successfully deleted order</response>
+        /// <response code="400">If the order does not exist</response>  
         // DELETE api/<OrderController>/5
         [HttpDelete("{id}")]
-        public void Delete(int id)
+        public ActionResult Delete(int id)
         {
+            var existingOrder = _orderManagement.GetOrder(id);
+            if (existingOrder is null)
+                return NotFound();
+
+            _orderManagement.DeleteOrder(id);
+            return Ok();
         }
     }
 }
