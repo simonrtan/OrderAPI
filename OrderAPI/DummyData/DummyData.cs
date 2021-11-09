@@ -44,15 +44,13 @@ namespace OrderAPI.DummyData
                 {
                     ID = 1,
                     CustomerDetails = DummyPersons.First(x => x.ID == 100),
-                    ShippingDetails = DummyPersons.First(x => x.ID == 100),
                     DateOrdered = DateTime.Now,
                     Status = Status.Ready
                 },
                 new Order()
                 {
                     ID = 2,
-                    CustomerDetails = DummyPersons.First(x => x.ID == 100),
-                    ShippingDetails = DummyPersons.First(x => x.ID == 200),
+                    CustomerDetails = DummyPersons.First(x => x.ID == 200),
                     DateOrdered = DateTime.Now,
                     Status = Status.Shipped
                 },

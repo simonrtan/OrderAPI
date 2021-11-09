@@ -18,8 +18,6 @@ namespace OrderAPI.Models
 
         public Person CustomerDetails { get; set; }
 
-        public Person ShippingDetails { get; set; }
-
         public Status Status { get; set; }
     }
 }

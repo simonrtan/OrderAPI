@@ -23,6 +23,9 @@ namespace OrderAPI.Business
             return 1;
         }
 
-        
+        public void DeleteOrder(int id)
+        {
+            return;
+        }
     }
 }
