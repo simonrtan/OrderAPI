@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Npgsql;
+using Microsoft.Extensions.Logging;
 using OrderAPI.Business;
 using OrderAPI.Models;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace OrderAPI.Controllers
 {
@@ -14,10 +11,12 @@ namespace OrderAPI.Controllers
     public class OrderController : ControllerBase
     {
         private readonly IOrderManagement _orderManagement;
-
-        public OrderController(IOrderManagement orderManagement)
+        private readonly ILogger<OrderController> _logger;
+        public OrderController(IOrderManagement orderManagement,
+                                ILogger<OrderController> logger)
         {
             _orderManagement = orderManagement;
+            _logger = logger;
         }
 
         /// <summary>
@@ -55,6 +54,7 @@ namespace OrderAPI.Controllers
             {
                 return Ok(_orderManagement.CreateOrder(order));
             } catch (Exception ex) {
+                _logger.LogError($"Failed to create order: {ex.ToString()}");
                 return BadRequest(ex.Message);
             }
         }
