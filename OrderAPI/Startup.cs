@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using OrderAPI.Business;
+using OrderAPI.HealthCheck;
 using Serilog;
 
 namespace OrderAPI
@@ -25,6 +26,7 @@ namespace OrderAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddServiceHealthChecks(Configuration);
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -54,6 +56,7 @@ namespace OrderAPI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health");
             });
         }
     }
